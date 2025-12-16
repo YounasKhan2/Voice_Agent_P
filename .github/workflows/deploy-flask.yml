@@ -25,7 +25,6 @@ jobs:
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ secrets.AZURE_FLASK_APP_NAME }}
+        app-name: voice-agent-flask
         publish-profile: ${{ secrets.AZURE_FLASK_PUBLISH_PROFILE }}
         package: ./flask_frontend
-        startup-command: 'bash startup.sh'
