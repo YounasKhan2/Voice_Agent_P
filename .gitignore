@@ -1,0 +1,60 @@
+#########################
+# General ignores
+#########################
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# Env files (do not commit secrets)
+.env
+*.env
+!*.env.example
+Backend/.env
+flask_frontend/.env
+django_persistence/.env
+
+# Editors / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test/coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database files (local development only)
+*.sqlite3
+db.sqlite3
+*.db
+
+# Static files (generated)
+staticfiles/
+django_persistence/staticfiles/
+
+# Deployment artifacts
+*.zip
+*-publish-profile.xml
+
+# Misc
+*.tmp
+*.temp

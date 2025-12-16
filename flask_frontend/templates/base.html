@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VoyageAI - Your Intelligent Travel Assistant</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
+    
+    <!-- Plus Jakarta Sans Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Material Symbols Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "primary-hover": "#0f6fd4",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "surface-light": "#ffffff",
+              "surface-dark": "#192633",
+              "text-primary-light": "#1a1a1a",
+              "text-primary-dark": "#eaeaea",
+              "text-secondary-light": "#666666",
+              "text-secondary-dark": "#92adc9",
+              "border-light": "#e5e7eb",
+              "border-dark": "rgba(255, 255, 255, 0.1)",
+              "bubble-agent-light": "#e5e7eb",
+              "bubble-agent-dark": "#233648",
+              "bubble-user": "#137fec",
+              "status-online": "#10b981",
+              "status-offline": "#6b7280",
+            },
+            fontFamily: {
+              "sans": ["Plus Jakarta Sans", "sans-serif"],
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "sm": "0.25rem",
+              "md": "0.5rem",
+              "lg": "0.75rem",
+              "xl": "1rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "1": "0.25rem",
+              "2": "0.5rem",
+              "3": "0.75rem",
+              "4": "1rem",
+              "6": "1.5rem",
+              "8": "2rem",
+            },
+          },
+        },
+      }
+    </script>
+    
+    <!-- Material Symbols Icon Styling -->
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}" />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/transitions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dark-mode.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

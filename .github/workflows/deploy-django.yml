@@ -1,0 +1,31 @@
+name: Deploy Django Persistence Service to Azure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'django_persistence/**'
+      - '.github/workflows/deploy-django.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ secrets.AZURE_DJANGO_APP_NAME }}
+        publish-profile: ${{ secrets.AZURE_DJANGO_PUBLISH_PROFILE }}
+        package: ./django_persistence
+        startup-command: 'bash startup.sh'

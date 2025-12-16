@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- User info bar -->
+<div class="user-bar">
+  <div class="user-bar-info">
+    Welcome, {{ user.display_name }}
+  </div>
+  <div class="user-bar-links">
+    <a href="{{ url_for('chat') }}">Chat</a>
+    <a href="{{ url_for('profile') }}">Profile</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+</div>
+
+<a href="{{ url_for('history') }}" class="back-link">
+  Back to History
+</a>
+
+<h2>Conversation Transcript</h2>
+
+<article>
+  <div class="profile-info-box">
+    <h4 class="session-card-title">{{ session.room }}</h4>
+    <p class="session-card-meta">
+      Started: {{ session.started_at }}
+    </p>
+    {% if session.ended_at %}
+    <p class="session-card-meta">
+      Ended: {{ session.ended_at }}
+    </p>
+    {% endif %}
+    {% if session.system_prompt %}
+    <p class="session-card-prompt" style="margin-top: 0.75rem;">
+      System Prompt: "{{ session.system_prompt }}"
+    </p>
+    {% endif %}
+  </div>
+  
+  <div class="transcript">
+    {% if session.utterances %}
+      {% for utterance in session.utterances %}
+      <div class="msg {{ utterance.role }}">
+        <span class="role">
+          {% if utterance.role == 'user' %}
+            👤 You:
+          {% elif utterance.role == 'agent' %}
+            🤖 Agent:
+          {% else %}
+            {{ utterance.role|capitalize }}:
+          {% endif %}
+        </span>
+        <span>{{ utterance.text }}</span>
+        <span class="msg-timestamp">
+          {{ utterance.created_at }}
+        </span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <p>No messages in this conversation.</p>
+      </div>
+    {% endif %}
+  </div>
+</article>
+
+<a href="{{ url_for('history') }}" class="back-link">
+  Back to History
+</a>
+{% endblock %}

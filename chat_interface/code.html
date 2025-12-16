@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="flex h-screen w-full">
+<!-- Sidebar -->
+<aside class="flex w-72 flex-col bg-white/5 dark:bg-black/10 p-4">
+<div class="flex flex-col h-full justify-between">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="WanderBot logo, a stylized compass" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPxxk00XNihcy6V7DS8HsqNNtORSxU36YojkOf5h7P7bivF41Fp9rSGlh4dcapDmraHR3nsWrSnTx2h29GMPYaCxm9RjY6FlkXiRayFtx3s9hxRtOLww1uul0RLDmqOdi7zXO0HDE_k9V4xEMqarwQj9yCfLMRRlOgpVTiTPqeftVi9kIzn8XrUZ6NoD1fbQ-15qWfNlsPSp8yGD9Z4MHdNbnpFxtO9iFigyX_fRhOQv13oDM_9WAkxHWIUCngaxk9zpL0lrEkQspA");'></div>
+<div class="flex flex-col">
+<h1 class="text-black dark:text-white text-base font-bold leading-normal">WanderBot</h1>
+<p class="text-gray-600 dark:text-[#92adc9] text-sm font-normal leading-normal">AI Travel Agent</p>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+<span class="material-symbols-outlined text-xl">add</span>
+<span class="truncate">New Chat</span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+<p class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Recent Chats</p>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg" href="#">
+<span class="material-symbols-outlined text-xl">chat_bubble</span>
+<p class="text-sm font-medium leading-normal">New York Adventure</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg" href="#">
+<span class="material-symbols-outlined text-xl">chat_bubble</span>
+<p class="text-sm font-medium leading-normal">Summer in Italy</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-primary" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<p class="text-sm font-bold leading-normal">Tokyo Flights</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-2 border-t border-gray-200 dark:border-white/10 pt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg" href="#">
+<span class="material-symbols-outlined text-xl">account_circle</span>
+<p class="text-sm font-medium leading-normal">My Account</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Chat Panel -->
+<main class="flex flex-1 flex-col">
+<header class="flex h-16 items-center border-b border-gray-200 dark:border-white/10 px-6 shrink-0">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-black dark:text-white">Tokyo Flights</h2>
+<div class="flex items-center gap-1.5">
+<div class="size-2 rounded-full bg-green-500"></div>
+<p class="text-xs text-gray-500 dark:text-gray-400">Online</p>
+</div>
+</div>
+</header>
+<div class="flex flex-1 flex-col overflow-y-auto p-6">
+<div class="flex flex-col gap-6">
+<!-- Chat Log -->
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="WanderBot logo, a stylized compass" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBgBRq-k20Ru2f1XT3AWUxgNTkbGjIzyVSLMJewZyy6FyDAsNj7L_HmdiBUyCGh9vn9c-800y0nkz3xJrLT7ntEHYLaidq4X4W0vgQ_lj8p-2iOVkPz_dvpko9vXdbw1LLH7XmP8FQKiKuEDAGbV3MHBH_SYAF5FrWJnhzU8GNH5-D9StEEUfgIZy08ZV4HFpR0jgBP0HViHZ5Mv5KEix3SDjgcnbsqEk-Sesk198TnqXQxuXk5FjDLCFWkuaB84Sw749_QfSIWTTQR");'></div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-gray-600 dark:text-[#92adc9] text-[13px] font-medium leading-normal max-w-[360px]">WanderBot</p>
+<div class="rounded-xl rounded-bl-none px-4 py-3 bg-gray-200 dark:bg-[#233648] text-black dark:text-white max-w-lg">
+<p class="text-base font-normal leading-relaxed">Hello! I'm your travel assistant. Where would you like to go?</p>
+</div>
+</div>
+</div>
+<div class="flex items-end gap-3 justify-end">
+<div class="flex flex-1 flex-col gap-1 items-end">
+<p class="text-gray-600 dark:text-[#92adc9] text-[13px] font-medium leading-normal max-w-[360px] text-right">You</p>
+<div class="rounded-xl rounded-br-none px-4 py-3 bg-primary text-white max-w-lg">
+<p class="text-base font-normal leading-relaxed">I'm looking for a budget-friendly trip to Tokyo in October.</p>
+</div>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar with a gradient background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD68fFw5DwoUzUbX4AO82svPLkn3m16SevWJyUxGzEt_bbBZEV_gtJ_n1h4xOex_-6UerLUwRcKYpm9Jj7qbNyTfTAdm38WzNJ54u4q6RVdUa8zEyyDk4P9_U_h4Pej-s6o4cMCB7autsSCwVYkNabRtVR4ewcLENOhIiMiwwnM3gkFAEIELpfz5ued5UbwhQzx3ZxQHptOroc4y5sdDkxvcuLOrQJs15CBIRQN9F7zlMcrp1FeCnsidmzcaTqtbmtv9OcqF-Q_sm2X");'></div>
+</div>
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="WanderBot logo, a stylized compass" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA695YyDWe0h9U68GX6ntgEjVkj3pA593hnPHGQezh8_FQ0Bq4T3_k_xBrA2F8kDggg-V0gknBwXaAGczFx2TZLSBXwZT-8EzGCJQJ6ImmAlrUcmck-g0d4y7cEojoVXjKI8xPKlpw2m7_1zPe8MNpOSqUcDKoY6BtLS03iAps5YbMFSx9nEmIn8GkiJvnGrrYsrL6u8Z-LKGh7Io3EqUKq-9-xHWmaLl6ssAA2Y9hhQbdFMp2siOQkoKMN61umhRcmLD_OxwYigRr8");'></div>
+<div class="flex flex-1 flex-col gap-2 items-start">
+<p class="text-gray-600 dark:text-[#92adc9] text-[13px] font-medium leading-normal max-w-[360px]">WanderBot</p>
+<div class="rounded-xl rounded-bl-none px-4 py-3 bg-gray-200 dark:bg-[#233648] text-black dark:text-white max-w-lg">
+<p class="text-base font-normal leading-relaxed">Great choice! Tokyo in October is beautiful. I've found a few options for you. Here's a carousel with some popular hotels:</p>
+</div>
+<div class="w-full max-w-2xl overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden">
+<div class="flex items-stretch pt-2 gap-4">
+<div class="flex h-full flex-col gap-4 rounded-xl bg-white/10 dark:bg-black/20 shadow-sm min-w-64 border border-gray-200 dark:border-white/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-t-xl" data-alt="Exterior view of the Shinjuku Grand Hotel" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBHk2db-91T0bosnEQQ619A9Gp7WH7IGICiW8UKKApBKPU2VAsxLHeklhDhwMqfECy32zTr_wbZsSN33QGWVqeWOe1OdWduJzsJTymE2f2lMCr4Eu6d_hT5v2An7hSnHm72vIROnQH9yAuGDZHYCCyAU1o-U3-L4zMW1q0U7X__mVXf4Nbeo3l3KGGX6ufPf-nReUHHn-GEDHQPT-ShbSeicuDy6XPn5ZUhBjuZqHDP16oPl7lTEvBHh-cocSowAzL7nUBG943x8x4b");'></div>
+<div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+<div>
+<p class="text-black dark:text-white text-base font-semibold leading-normal">Shinjuku Grand Hotel</p>
+<p class="text-gray-600 dark:text-[#92adc9] text-sm font-normal leading-normal">$150/night - 4.5 Stars</p>
+</div>
+<button class="flex min-w-[84px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#233648] text-black dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+<div class="flex h-full flex-col gap-4 rounded-xl bg-white/10 dark:bg-black/20 shadow-sm min-w-64 border border-gray-200 dark:border-white/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-t-xl" data-alt="Tokyo View Inn at dusk" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAwViZXl7c7M3gKhGvmFYIoYUEVjzGJOmX92ESyM9iAqh64x3j4dQjFf9wJ3tNRM4uJ91SXG1Q3gx-m8wk5Md3aT472ke3kMv6H8V3CI1iMtOymk-pBA9azENywKtgrbykvfL5dkJ6Py6Chg199Uho7gKFa6H_7B6Ao1c1f3u1RcfK44_ZaIIIx6Ie6DHLZbXvNStC4JBEHp1iZJTmTeXOKrH_c3TAW7IT3NmoMqOCcyr0-3eSkSdOYtCvgvBx7CcFHBi_vQZOHxsv6");'></div>
+<div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+<div>
+<p class="text-black dark:text-white text-base font-semibold leading-normal">Tokyo View Inn</p>
+<p class="text-gray-600 dark:text-[#92adc9] text-sm font-normal leading-normal">$120/night - 4.2 Stars</p>
+</div>
+<button class="flex min-w-[84px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#233648] text-black dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+<div class="flex h-full flex-col gap-4 rounded-xl bg-white/10 dark:bg-black/20 shadow-sm min-w-64 border border-gray-200 dark:border-white/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-t-xl" data-alt="Traditional Japanese entrance to Asakusa Ryokan" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCCLGpB-IMWAUGqsdaZ-0G041uFTIo413EEERrBIondiSe4oHjnHX6LqJsDFwI6Rfm1-cFDRRRDKCDF2hqUyTcWHHaBQFCNfW90azgXsTr8Cmw0BnUHWdp5FSlf-tMxwD5fWhaKrvEj-EnIaL4fdhxDl_h_sCEyH4HbIyJpsTTLqgXtd9_0_eG24ElNbvMpEzgJ6ICR1OQBo56foLQIZ5t-mBUpAchaHORzPnqCwDJ65MccYLcCjXdfQFY9GgrkBbz8IxePK_40Teb4");'></div>
+<div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+<div>
+<p class="text-black dark:text-white text-base font-semibold leading-normal">Asakusa Ryokan</p>
+<p class="text-gray-600 dark:text-[#92adc9] text-sm font-normal leading-normal">$180/night - 4.8 Stars</p>
+</div>
+<button class="flex min-w-[84px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#233648] text-black dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-6 pb-6 pt-4 mt-auto">
+<div class="flex gap-2 mb-3">
+<button class="px-4 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-full bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Show me flights</button>
+<button class="px-4 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-full bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Find activities</button>
+<button class="px-4 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-full bg-background-light dark:bg-background-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">I need a rental car</button>
+</div>
+<div class="relative">
+<textarea class="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#192633] py-3 pl-4 pr-12 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Ask about your next trip..." rows="1"></textarea>
+<button class="absolute bottom-2 right-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="material-symbols-outlined text-xl">send</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

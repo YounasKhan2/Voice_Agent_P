@@ -1,0 +1,23 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modern chat bubble logo with gradient -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Chat bubble icon -->
+  <g transform="translate(10, 10)">
+    <rect x="0" y="8" width="32" height="24" rx="6" fill="url(#logoGradient)"/>
+    <path d="M 8 32 L 12 36 L 16 32" fill="url(#logoGradient)"/>
+    <circle cx="10" cy="20" r="2" fill="white"/>
+    <circle cx="16" cy="20" r="2" fill="white"/>
+    <circle cx="22" cy="20" r="2" fill="white"/>
+  </g>
+  
+  <!-- Brand text -->
+  <text x="55" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">
+    ChatAI
+  </text>
+</svg>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- User info bar (if user is authenticated) -->
+{% if user %}
+<div style="background: #1a1a1a; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+  <div>
+    <span style="color: #9ad;">Welcome, {{ user.display_name }}</span>
+  </div>
+  <div style="display: flex; gap: 1rem;">
+    <a href="{{ url_for('chat') }}" style="color: #ad9;">Chat</a>
+    <a href="{{ url_for('profile') }}" style="color: #ad9;">Profile</a>
+    <a href="{{ url_for('history') }}" style="color: #ad9;">History</a>
+    <a href="{{ url_for('logout') }}" style="color: #ad9;">Logout</a>
+  </div>
+</div>
+{% endif %}
+
+<article style="max-width: 600px; margin: 2rem auto; text-align: center;">
+  <h2>{{ error_title or "Error" }}</h2>
+  
+  <div style="background: #f44336; color: white; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+    <p style="margin: 0;">{{ error_message or "An unexpected error occurred." }}</p>
+  </div>
+  
+  <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+    <a href="{{ url_for('history') }}" style="color: #ad9; text-decoration: none;">
+      ← Back to History
+    </a>
+    <span style="color: #666;">|</span>
+    <a href="{{ url_for('chat') }}" style="color: #ad9; text-decoration: none;">
+      Go to Chat
+    </a>
+  </div>
+</article>
+{% endblock %}

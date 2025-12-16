@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- User info bar -->
+<div class="user-bar">
+  <div class="user-bar-info">
+    Welcome, {{ user.display_name }}
+  </div>
+  <div class="user-bar-links">
+    <a href="{{ url_for('chat') }}">Chat</a>
+    <a href="{{ url_for('profile') }}">Profile</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+</div>
+
+<h2>Conversation History</h2>
+<p class="muted">View your past conversations with the voice agent.</p>
+
+<article>
+  {% if sessions %}
+    <div class="history-list">
+      {% for session in sessions %}
+      <div class="session-card">
+        <div class="session-card-header">
+          <div>
+            <h4 class="session-card-title">{{ session.room }}</h4>
+            <p class="session-card-meta">
+              Started: {{ session.started_at }}
+            </p>
+            {% if session.ended_at %}
+            <p class="session-card-meta">
+              Ended: {{ session.ended_at }}
+            </p>
+            {% endif %}
+          </div>
+          <div class="session-card-stats">
+            {{ session.utterance_count }} messages
+          </div>
+        </div>
+        
+        {% if session.system_prompt %}
+        <p class="session-card-prompt">
+          "{{ session.system_prompt[:100] }}{% if session.system_prompt|length > 100 %}...{% endif %}"
+        </p>
+        {% endif %}
+        
+        <div class="session-card-actions">
+          <a href="{{ url_for('history_detail', session_id=session.id) }}" class="session-card-link">
+            View Transcript
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    {% if has_more %}
+    <div class="pagination-info">
+      <p class="muted">Showing {{ sessions|length }} of {{ total_count }} conversations</p>
+    </div>
+    {% endif %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">📭</div>
+      <p class="empty-state-title">No conversation history yet.</p>
+      <p class="empty-state-text">Start a conversation to see it appear here.</p>
+      <a href="{{ url_for('chat') }}" class="empty-state-link">
+        Start a Conversation
+      </a>
+    </div>
+  {% endif %}
+</article>
+{% endblock %}

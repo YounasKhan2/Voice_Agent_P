@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderBot - AI Travel Agent</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts - Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Material Symbols Outlined -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+          },
+          colors: {
+            primary: '#137fec',
+            'primary-hover': '#0f6fd4',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* Hide scrollbars while maintaining scroll functionality */
+    #messages-container {
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE and Edge */
+    }
+
+    #messages-container::-webkit-scrollbar {
+      display: none;
+      /* Chrome, Safari, Opera */
+    }
+
+    /* Speaking animation - pulsing ring around avatar */
+    @keyframes pulse-ring {
+      0% {
+        box-shadow: 0 0 0 0 rgba(19, 127, 236, 0.7);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(19, 127, 236, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(19, 127, 236, 0);
+      }
+    }
+
+    .speaking-animation {
+      animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Speaking indicator dots */
+    @keyframes speaking-dots {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+
+      30% {
+        transform: translateY(-8px);
+        opacity: 1;
+      }
+    }
+
+    .speaking-dot {
+      animation: speaking-dots 1.4s infinite;
+    }
+
+    .speaking-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .speaking-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  </style>
+</head>
+
+<body class="bg-[#f6f7f8] dark:bg-[#101922] text-gray-900 dark:text-gray-100">
+
+  <!-- Main Container: Flexbox with full viewport height -->
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- Main Chat Panel: flex-1 to fill remaining space -->
+    <main class="flex-1 flex flex-col bg-white dark:bg-[#192633]">
+
+      <!-- Chat Header Component -->
+      <header class="h-16 border-b border-gray-200 dark:border-white/10 px-6 flex items-center justify-between">
+        <!-- Left side: Conversation title and status -->
+        <div class="flex items-center gap-3">
+          <!-- Conversation Title -->
+          <h2 id="conversation-title" class="text-xl font-bold text-gray-900 dark:text-white">New Conversation</h2>
+
+          <!-- Agent Status Indicator -->
+          <div id="agent-status" class="flex items-center gap-1.5">
+            <!-- Status dot -->
+            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+            <!-- Status text -->
+            <span class="text-sm text-gray-600 dark:text-gray-400">Ready</span>
+          </div>
+        </div>
+
+        <!-- Right side: Speaking indicator and My Account -->
+        <div class="flex items-center gap-4">
+          <!-- Speaking indicator (hidden by default) -->
+          <div id="speaking-indicator" class="hidden flex items-center gap-2">
+            <div class="flex gap-1">
+              <div class="speaking-dot w-2 h-2 rounded-full bg-primary"></div>
+              <div class="speaking-dot w-2 h-2 rounded-full bg-primary"></div>
+              <div class="speaking-dot w-2 h-2 rounded-full bg-primary"></div>
+            </div>
+            <span id="speaking-text" class="text-sm font-medium text-primary">Agent speaking...</span>
+          </div>
+
+          <!-- My Account Link -->
+          <a href="{{ url_for('profile') }}"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 transition-colors duration-200">
+            <span class="material-symbols-outlined text-xl">account_circle</span>
+            <span class="text-sm font-medium">My Account</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Messages Container: Scrollable area with flex-1 to fill available space -->
+      <div id="messages-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+        <!-- Messages will be dynamically added here by voice-agent.js -->
+
+        <!-- Empty state message -->
+        <div id="empty-state" class="flex flex-col items-center justify-center h-full text-center">
+          <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-5xl text-primary">mic</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Start a Voice Conversation</h3>
+          <p class="text-gray-600 dark:text-gray-400 max-w-md">
+            Click the microphone button below to start talking with WanderBot about your travel plans.
+          </p>
+        </div>
+      </div>
+
+      <!-- Voice Control Area -->
+      <div class="p-6 border-t border-gray-200 dark:border-white/10 flex items-center justify-center gap-4">
+        <button id="voice-button"
+          class="w-16 h-16 rounded-full bg-primary hover:bg-primary-hover text-white flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30 shadow-lg hover:shadow-xl"
+          aria-label="Start voice conversation">
+          <span class="material-symbols-outlined text-3xl">mic</span>
+        </button>
+
+        <!-- Stop Agent Button (visible when agent is active) -->
+        <button id="stop-agent-button"
+          class="hidden w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white items-center justify-center transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl"
+          aria-label="Stop agent">
+          <span class="material-symbols-outlined text-3xl">stop_circle</span>
+        </button>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Hidden elements for LiveKit functionality -->
+  <audio id="agent-audio" autoplay playsinline style="display:none"></audio>
+  <input type="hidden" id="room" value="{{ config.defaultRoom }}" />
+  <input type="hidden" id="name" value="{{ config.user.display_name }}" />
+
+  <script id="app-config" type="application/json">{{ config|tojson }}</script>
+  <script src="https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+  <script>
+    // Create global showToast function for voice-agent.js
+    window.showToast = function(message, type = 'info') {
+      if (window.toast) {
+        window.toast.show(message, type);
+      }
+    };
+  </script>
+  <script src="{{ url_for('static', filename='js/voice-agent.js') }}"></script>
+
+  <!-- Auto-scroll behavior and speaking animations -->
+  <script>
+      (function () {
+        const messagesContainer = document.getElementById('messages-container');
+        const emptyState = document.getElementById('empty-state');
+        const speakingIndicator = document.getElementById('speaking-indicator');
+        const speakingText = document.getElementById('speaking-text');
+        const agentStatus = document.getElementById('agent-status');
+
+        let userHasScrolledUp = false;
+        let isAutoScrolling = false;
+        let currentSpeakingAvatar = null;
+
+        // Function to check if user is at the bottom of the container
+        function isAtBottom() {
+          const threshold = 50;
+          return messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < threshold;
+        }
+
+        // Function to scroll to bottom smoothly
+        function scrollToBottom() {
+          if (!userHasScrolledUp) {
+            isAutoScrolling = true;
+            messagesContainer.scrollTo({
+              top: messagesContainer.scrollHeight,
+              behavior: 'smooth'
+            });
+
+            setTimeout(() => {
+              isAutoScrolling = false;
+            }, 300);
+          }
+        }
+
+        // Detect manual scroll by user
+        messagesContainer.addEventListener('scroll', function () {
+          if (isAutoScrolling) return;
+
+          if (isAtBottom()) {
+            userHasScrolledUp = false;
+          } else {
+            userHasScrolledUp = true;
+          }
+        });
+
+        // Observer to detect when new messages are added
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+              // Hide empty state when first message is added
+              if (emptyState && messagesContainer.children.length > 1) {
+                emptyState.style.display = 'none';
+              }
+              scrollToBottom();
+            }
+          });
+        });
+
+        observer.observe(messagesContainer, {
+          childList: true,
+          subtree: false
+        });
+
+        // Initial scroll to bottom on page load
+        window.addEventListener('load', function () {
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+
+        // Function to show speaking animation on avatar
+        function showSpeakingAnimation(isAgent) {
+          // Remove animation from any currently speaking avatar
+          if (currentSpeakingAvatar) {
+            currentSpeakingAvatar.classList.remove('speaking-animation');
+          }
+
+          // Find the most recent message avatar
+          const messages = messagesContainer.querySelectorAll('.flex.items-start');
+          if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            const avatar = lastMessage.querySelector('img');
+            if (avatar) {
+              avatar.classList.add('speaking-animation');
+              currentSpeakingAvatar = avatar;
+            }
+          }
+
+          // Show speaking indicator in header
+          if (speakingIndicator) {
+            speakingIndicator.classList.remove('hidden');
+            if (speakingText) {
+              speakingText.textContent = isAgent ? 'Agent speaking...' : 'You are speaking...';
+            }
+          }
+
+          // Update agent status
+          if (agentStatus && isAgent) {
+            const statusDot = agentStatus.querySelector('.w-2');
+            const statusText = agentStatus.querySelector('span');
+            if (statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-primary';
+            if (statusText) statusText.textContent = 'Speaking';
+          }
+        }
+
+        // Function to hide speaking animation
+        function hideSpeakingAnimation() {
+          if (currentSpeakingAvatar) {
+            currentSpeakingAvatar.classList.remove('speaking-animation');
+            currentSpeakingAvatar = null;
+          }
+
+          if (speakingIndicator) {
+            speakingIndicator.classList.add('hidden');
+          }
+
+          // Reset agent status
+          if (agentStatus) {
+            const statusDot = agentStatus.querySelector('.w-2');
+            const statusText = agentStatus.querySelector('span');
+            if (statusDot) statusDot.className = 'w-2 h-2 rounded-full bg-green-500';
+            if (statusText) statusText.textContent = 'Ready';
+          }
+        }
+
+        // Function to add a message to the chat
+        function addMessage(text, isAgent) {
+          // Hide empty state
+          if (emptyState) {
+            emptyState.style.display = 'none';
+          }
+
+          const messageDiv = document.createElement('div');
+          messageDiv.className = isAgent ? 'flex items-start gap-3' : 'flex items-start gap-3 justify-end';
+          messageDiv.setAttribute('data-role', isAgent ? 'agent' : 'user');
+          messageDiv.setAttribute('data-final', 'true');
+
+          const avatarUrl = isAgent
+            ? 'https://ui-avatars.com/api/?name=WanderBot&background=137fec&color=fff&size=40&rounded=true'
+            : 'https://ui-avatars.com/api/?name={{ config.user.display_name }}&background=6b7280&color=fff&size=40&rounded=true';
+
+          const senderName = isAgent ? 'WanderBot' : 'You';
+          const bubbleClass = isAgent
+            ? 'bg-gray-200 dark:bg-[#233648] rounded-xl rounded-bl-none px-4 py-3'
+            : 'bg-primary text-white rounded-xl rounded-br-none px-4 py-3';
+
+          const textClass = isAgent
+            ? 'text-base leading-relaxed text-gray-900 dark:text-gray-100'
+            : 'text-base leading-relaxed';
+
+          if (isAgent) {
+            messageDiv.innerHTML = `
+            <img 
+              src="${avatarUrl}" 
+              alt="${senderName} Avatar" 
+              class="w-10 h-10 rounded-full flex-shrink-0"
+            />
+            <div class="flex flex-col gap-1 max-w-[32rem]">
+              <p class="text-xs font-medium text-gray-600 dark:text-gray-400 px-1">${senderName}</p>
+              <div class="${bubbleClass}">
+                <p class="${textClass}">${escapeHtml(text)}</p>
+              </div>
+            </div>
+          `;
+          } else {
+            messageDiv.innerHTML = `
+            <div class="flex flex-col gap-1 max-w-[32rem] items-end">
+              <p class="text-xs font-medium text-gray-600 dark:text-gray-400 px-1">${senderName}</p>
+              <div class="${bubbleClass}">
+                <p class="${textClass}">${escapeHtml(text)}</p>
+              </div>
+            </div>
+            <img 
+              src="${avatarUrl}" 
+              alt="${senderName} Avatar" 
+              class="w-10 h-10 rounded-full flex-shrink-0"
+            />
+          `;
+          }
+
+          messagesContainer.appendChild(messageDiv);
+          scrollToBottom();
+        }
+
+        // Function to create a new interim message
+        function createInterimMessage(text, isAgent, role, messageId) {
+          console.log(`Creating interim message - Role: ${role}, ID: ${messageId}, Text: ${text.substring(0, 50)}...`);
+
+          // Hide empty state
+          if (emptyState) {
+            emptyState.style.display = 'none';
+          }
+
+          const interimDiv = document.createElement('div');
+          interimDiv.className = isAgent ? 'flex items-start gap-3' : 'flex items-start gap-3 justify-end';
+          interimDiv.setAttribute('data-role', role);
+          interimDiv.setAttribute('data-interim', 'true');
+          interimDiv.setAttribute('data-message-id', messageId);
+          interimDiv.setAttribute('data-timestamp', Date.now());
+
+          const avatarUrl = isAgent
+            ? 'https://ui-avatars.com/api/?name=WanderBot&background=137fec&color=fff&size=40&rounded=true'
+            : 'https://ui-avatars.com/api/?name={{ config.user.display_name }}&background=6b7280&color=fff&size=40&rounded=true';
+
+          const senderName = isAgent ? 'WanderBot' : 'You';
+          const bubbleClass = isAgent
+            ? 'bg-gray-200 dark:bg-[#233648] rounded-xl rounded-bl-none px-4 py-3 opacity-60'
+            : 'bg-primary text-white rounded-xl rounded-br-none px-4 py-3 opacity-60';
+
+          const textClass = isAgent
+            ? 'text-base leading-relaxed text-gray-900 dark:text-gray-100'
+            : 'text-base leading-relaxed';
+
+          if (isAgent) {
+            interimDiv.innerHTML = `
+            <img 
+              src="${avatarUrl}" 
+              alt="${senderName} Avatar" 
+              class="w-10 h-10 rounded-full flex-shrink-0"
+            />
+            <div class="flex flex-col gap-1 max-w-[32rem]">
+              <p class="text-xs font-medium text-gray-600 dark:text-gray-400 px-1">${senderName}</p>
+              <div class="${bubbleClass}">
+                <p class="${textClass} interim-text">${escapeHtml(text)}</p>
+              </div>
+            </div>
+          `;
+          } else {
+            interimDiv.innerHTML = `
+            <div class="flex flex-col gap-1 max-w-[32rem] items-end">
+              <p class="text-xs font-medium text-gray-600 dark:text-gray-400 px-1">${senderName}</p>
+              <div class="${bubbleClass}">
+                <p class="${textClass} interim-text">${escapeHtml(text)}</p>
+              </div>
+            </div>
+            <img 
+              src="${avatarUrl}" 
+              alt="${senderName} Avatar" 
+              class="w-10 h-10 rounded-full flex-shrink-0"
+            />
+          `;
+          }
+
+          messagesContainer.appendChild(interimDiv);
+          scrollToBottom();
+        }
+
+        // Function to update existing interim message
+        function updateInterimMessage(text, isAgent, role, messageId) {
+          const interimDiv = messagesContainer.querySelector(`[data-message-id="${messageId}"][data-interim="true"]`);
+          if (interimDiv) {
+            const textElement = interimDiv.querySelector('.interim-text');
+            if (textElement) {
+              textElement.textContent = text;
+            }
+            scrollToBottom();
+          } else {
+            console.warn(`Could not find interim message to update - ID: ${messageId}, Role: ${role}`);
+          }
+        }
+
+        // Function to finalize interim message (convert to final)
+        function finalizeInterimMessage(role, text) {
+          console.log(`Finalizing interim message - Role: ${role}, Text: ${text.substring(0, 50)}...`);
+
+          // Find the LAST interim message for this role (most recent one)
+          const allInterims = messagesContainer.querySelectorAll(`[data-role="${role}"][data-interim="true"]`);
+          console.log(`Found ${allInterims.length} interim messages for role: ${role}`);
+
+          if (allInterims.length > 0) {
+            const interimDiv = allInterims[allInterims.length - 1];
+            const messageId = interimDiv.getAttribute('data-message-id');
+            console.log(`Finalizing message ID: ${messageId}`);
+
+            // Remove interim attributes
+            interimDiv.removeAttribute('data-interim');
+            interimDiv.removeAttribute('data-message-id');
+            interimDiv.removeAttribute('data-timestamp');
+            interimDiv.setAttribute('data-final', 'true');
+
+            // Update text
+            const textElement = interimDiv.querySelector('.interim-text');
+            if (textElement) {
+              textElement.textContent = text;
+              textElement.classList.remove('interim-text');
+            }
+
+            // Remove opacity (make it solid)
+            const bubble = interimDiv.querySelector('[class*="opacity-"]');
+            if (bubble) {
+              bubble.classList.remove('opacity-60', 'opacity-70');
+            }
+
+            scrollToBottom();
+          } else {
+            console.warn(`No interim message found to finalize for role: ${role}`);
+          }
+        }
+
+        // Function to remove interim message
+        function removeInterimMessage(role, messageId) {
+          const selector = messageId
+            ? `[data-message-id="${messageId}"][data-interim="true"]`
+            : `[data-role="${role}"][data-interim="true"]`;
+          const interimDiv = messagesContainer.querySelector(selector);
+          if (interimDiv) {
+            interimDiv.remove();
+          }
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        // Expose functions globally for voice-agent.js
+        window.chatUI = {
+          addMessage: addMessage,
+          createInterimMessage: createInterimMessage,
+          updateInterimMessage: updateInterimMessage,
+          finalizeInterimMessage: finalizeInterimMessage,
+          removeInterimMessage: removeInterimMessage,
+          showSpeakingAnimation: showSpeakingAnimation,
+          hideSpeakingAnimation: hideSpeakingAnimation,
+          scrollToBottom: scrollToBottom
+        };
+      })();
+  </script>
+
+  <!-- Stop Agent button handler -->
+  <script>
+    (function () {
+      const voiceButton = document.getElementById('voice-button');
+      const stopAgentButton = document.getElementById('stop-agent-button');
+
+      if (stopAgentButton && voiceButton) {
+        // Show stop button when voice is active
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              if (voiceButton.classList.contains('bg-red-500')) {
+                // Voice is active, show stop button
+                stopAgentButton.classList.remove('hidden');
+                stopAgentButton.classList.add('flex');
+              } else {
+                // Voice is inactive, hide stop button
+                stopAgentButton.classList.add('hidden');
+                stopAgentButton.classList.remove('flex');
+              }
+            }
+          });
+        });
+
+        observer.observe(voiceButton, {
+          attributes: true,
+          attributeFilter: ['class']
+        });
+
+        // Stop button click handler - disconnects the agent
+        stopAgentButton.addEventListener('click', function () {
+          console.log('Stop agent button clicked');
+          
+          // Show loading state
+          stopAgentButton.disabled = true;
+          const icon = stopAgentButton.querySelector('.material-symbols-outlined');
+          if (icon) {
+            icon.textContent = 'hourglass_empty';
+            icon.classList.add('animate-spin');
+          }
+          
+          // Trigger disconnect by clicking voice button
+          voiceButton.click();
+          
+          // Reset button state after a short delay
+          setTimeout(() => {
+            stopAgentButton.disabled = false;
+            if (icon) {
+              icon.textContent = 'stop_circle';
+              icon.classList.remove('animate-spin');
+            }
+          }, 500);
+        });
+      }
+    })();
+  </script>
+
+
+
+</body>
+
+</html>

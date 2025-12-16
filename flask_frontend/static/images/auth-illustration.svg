@@ -1,0 +1,62 @@
+<svg width="600" height="800" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modern abstract illustration for auth pages -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.3" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background gradient -->
+  <rect width="600" height="800" fill="#0f172a"/>
+  
+  <!-- Abstract shapes -->
+  <circle cx="150" cy="200" r="120" fill="url(#grad1)" opacity="0.6">
+    <animate attributeName="cy" values="200;220;200" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="450" cy="350" r="100" fill="url(#grad2)" opacity="0.5">
+    <animate attributeName="cx" values="450;470;450" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="300" cy="550" r="140" fill="url(#grad3)" opacity="0.4">
+    <animate attributeName="r" values="140;150;140" dur="6s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Floating chat bubbles -->
+  <g opacity="0.7">
+    <rect x="100" y="450" width="180" height="100" rx="12" fill="#1e293b" stroke="#6366f1" stroke-width="2">
+      <animate attributeName="y" values="450;440;450" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="130" cy="485" r="4" fill="#6366f1"/>
+    <circle cx="150" cy="485" r="4" fill="#6366f1"/>
+    <circle cx="170" cy="485" r="4" fill="#6366f1"/>
+    <text x="120" y="525" font-family="system-ui" font-size="14" fill="#94a3b8">AI-powered conversations</text>
+  </g>
+  
+  <g opacity="0.6">
+    <rect x="320" cy="150" width="200" height="80" rx="12" fill="#1e293b" stroke="#8b5cf6" stroke-width="2">
+      <animate attributeName="y" values="150;160;150" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="340" y="185" font-family="system-ui" font-size="14" fill="#94a3b8">Smart & intuitive</text>
+    <text x="340" y="210" font-family="system-ui" font-size="14" fill="#94a3b8">interface</text>
+  </g>
+  
+  <!-- Decorative dots pattern -->
+  <g opacity="0.3">
+    <circle cx="80" cy="100" r="3" fill="#6366f1"/>
+    <circle cx="100" cy="100" r="3" fill="#6366f1"/>
+    <circle cx="120" cy="100" r="3" fill="#6366f1"/>
+    <circle cx="520" cy="650" r="3" fill="#8b5cf6"/>
+    <circle cx="540" cy="650" r="3" fill="#8b5cf6"/>
+    <circle cx="560" cy="650" r="3" fill="#8b5cf6"/>
+  </g>
+</svg>

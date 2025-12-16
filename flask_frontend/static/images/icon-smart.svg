@@ -1,0 +1,21 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="smartIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Brain/head outline -->
+  <circle cx="24" cy="20" r="14" fill="url(#smartIconGrad)"/>
+  
+  <!-- Circuit pattern inside -->
+  <circle cx="18" cy="16" r="2" fill="white"/>
+  <circle cx="30" cy="16" r="2" fill="white"/>
+  <circle cx="24" cy="24" r="2" fill="white"/>
+  <line x1="18" y1="16" x2="24" y2="24" stroke="white" stroke-width="1.5"/>
+  <line x1="30" y1="16" x2="24" y2="24" stroke="white" stroke-width="1.5"/>
+  
+  <!-- Body -->
+  <rect x="20" y="34" width="8" height="10" rx="2" fill="url(#smartIconGrad)"/>
+</svg>

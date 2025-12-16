@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fastIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Lightning bolt -->
+  <path d="M 28 4 L 14 24 L 22 24 L 20 44 L 34 24 L 26 24 Z" fill="url(#fastIconGrad)"/>
+  
+  <!-- Speed lines -->
+  <line x1="38" y1="16" x2="44" y2="16" stroke="url(#fastIconGrad)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="36" y1="24" x2="44" y2="24" stroke="url(#fastIconGrad)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="38" y1="32" x2="44" y2="32" stroke="url(#fastIconGrad)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+</svg>

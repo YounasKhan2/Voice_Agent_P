@@ -1,0 +1,376 @@
+/* ============================================
+   Landing Page Styles
+   ============================================ */
+
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.landing-hero {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-hero-content {
+  max-width: 600px;
+  text-align: center;
+  z-index: 2;
+  position: relative;
+}
+
+/* Branding */
+.landing-branding {
+  margin-bottom: 3rem;
+}
+
+.landing-logo {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.landing-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.landing-tagline {
+  font-size: 1.25rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Authentication Actions */
+.landing-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #f1f5f9;
+  border: 2px solid #6366f1;
+}
+
+.btn-secondary:hover {
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Visual Elements */
+.landing-visual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+}
+
+.hero-illustration {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  object-fit: contain;
+}
+
+.visual-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.visual-circle-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #6366f1, transparent);
+  top: 10%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.visual-circle-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #8b5cf6, transparent);
+  bottom: 10%;
+  left: 5%;
+  animation-delay: 1s;
+}
+
+.visual-circle-3 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, #ec4899, transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 2s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.15;
+  }
+}
+
+/* ============================================
+   Features Section
+   ============================================ */
+
+.landing-features {
+  padding: 4rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.features-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 3rem 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.feature-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0 0 0.75rem 0;
+}
+
+.feature-description {
+  font-size: 0.9375rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+.landing-footer {
+  padding: 2rem 1rem;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.8);
+  border-top: 1px solid #334155;
+}
+
+.footer-text {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  .landing-title {
+    font-size: 2.25rem;
+  }
+
+  .landing-tagline {
+    font-size: 1.125rem;
+  }
+
+  .landing-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .features-title {
+    font-size: 1.75rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .visual-circle-1,
+  .visual-circle-2,
+  .visual-circle-3 {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero {
+    padding: 2rem 1rem;
+  }
+
+  .landing-title {
+    font-size: 1.875rem;
+  }
+
+  .landing-tagline {
+    font-size: 1rem;
+  }
+
+  .landing-branding {
+    margin-bottom: 2rem;
+  }
+
+  .landing-features {
+    padding: 3rem 1rem;
+  }
+
+  .features-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .feature-card {
+    padding: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-logo,
+  .visual-circle {
+    animation: none;
+  }
+
+  .btn,
+  .feature-card {
+    transition: none;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.btn:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .feature-card {
+    border: 2px solid #6366f1;
+  }
+
+  .btn-secondary {
+    border-width: 3px;
+  }
+}

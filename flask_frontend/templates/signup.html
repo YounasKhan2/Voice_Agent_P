@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/validation.js') }}" defer></script>
+<style>
+  /* Override base container styles for full-width split screen */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  main.container {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const validator = new FormValidator(form);
+
+    // Check if signup was successful
+    {% if success %}
+    // Show success toast
+    if (window.showToast) {
+      window.showToast('Account created successfully! Redirecting to login...', 'success');
+    }
+
+    // Redirect to login after 2 seconds
+    setTimeout(function () {
+      window.location.href = "{{ url_for('login') }}";
+
+
+    }, 2000);
+    {% endif %}
+
+    // Password visibility toggle
+    const passwordToggle = document.getElementById('password-toggle');
+    const passwordInput = document.getElementById('password');
+
+    if (passwordToggle && passwordInput) {
+      passwordToggle.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle icon
+        this.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+      });
+    }
+
+    // Add real-time validation on blur
+    validator.addBlurValidation('email', (value) => validator.validateEmail(value));
+    validator.addBlurValidation('display_name', (value) => validator.validateDisplayName(value));
+    validator.addBlurValidation('password', (value) => validator.validatePassword(value));
+
+    // Add password confirmation validation
+    const confirmPasswordField = document.getElementById('confirm_password');
+    if (confirmPasswordField) {
+      confirmPasswordField.addEventListener('blur', function () {
+        const password = document.getElementById('password').value;
+        const error = validator.validatePasswordConfirmation(password, this.value);
+        if (error) {
+          validator.showError('confirm_password', error);
+        } else {
+          validator.clearError('confirm_password');
+        }
+      });
+
+      // Clear confirm password error when password changes
+      passwordInput.addEventListener('input', function () {
+        if (confirmPasswordField.classList.contains('border-red-500')) {
+          validator.clearError('confirm_password');
+        }
+      });
+
+      // Clear confirm password error when typing
+      confirmPasswordField.addEventListener('input', function () {
+        if (this.classList.contains('border-red-500')) {
+          validator.clearError('confirm_password');
+        }
+      });
+    }
+
+    // Validate on form submission
+    form.addEventListener('submit', function (event) {
+      const isValid = validator.validateSignupForm();
+      console.log('Form validation result:', isValid);
+      console.log('Validation errors:', validator.errors);
+
+      if (!isValid) {
+        event.preventDefault();
+        const firstError = form.querySelector('.border-red-500');
+        if (firstError) {
+          firstError.focus();
+        }
+      }
+    });
+
+    // Focus on first error field if server-side validation failed
+    const firstServerError = form.querySelector('.border-red-500');
+    if (firstServerError) {
+      firstServerError.focus();
+    }
+
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen flex-col lg:flex-row">
+  <!-- Left Form Panel (50% width on desktop, full width on mobile) -->
+  <div
+    class="flex w-full lg:w-1/2 flex-col justify-center bg-[#f6f7f8] dark:bg-[#101922] px-6 py-8 sm:px-8 sm:py-12 lg:px-16">
+    <div class="mx-auto w-full max-w-md">
+      <!-- Mobile Logo (visible only on mobile) -->
+      <div class="flex lg:hidden items-center justify-center gap-3 mb-8">
+        <span class="material-symbols-outlined text-3xl text-primary">travel_explore</span>
+        <span class="text-2xl font-bold text-slate-900 dark:text-white">VoyageAI</span>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-800 dark:text-white mb-2 sm:mb-3">Begin Your Next Adventure
+      </h1>
+      <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8">Join 10,000+ happy travelers
+        planning their perfect trips with AI-powered assistance.</p>
+
+      <!-- Form -->
+      <form method="POST" action="{{ url_for('signup') }}" class="flex flex-col gap-5 sm:gap-6">
+        <!-- Email Input -->
+        <div class="flex flex-col gap-2">
+          <label for="email" class="text-sm sm:text-base font-medium text-slate-800 dark:text-white">Email</label>
+          <input type="email" id="email" name="email"
+            class="h-12 sm:h-14 w-full rounded-lg border {% if errors and errors.email %}border-red-500{% else %}border-slate-300 dark:border-slate-700{% endif %} bg-[#f6f7f8] dark:bg-slate-800 px-4 text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#137fec] focus:outline-none focus:ring-2 focus:ring-[#137fec]/20"
+            placeholder="you@example.com" value="{{ email or '' }}" required />
+          {% if errors and errors.email %}
+          <span class="text-xs sm:text-sm text-red-500">{{ errors.email }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Username Input -->
+        <div class="flex flex-col gap-2">
+          <label for="username" class="text-sm sm:text-base font-medium text-slate-800 dark:text-white">Username</label>
+          <input type="text" id="username" name="username"
+            class="h-12 sm:h-14 w-full rounded-lg border {% if errors and errors.username %}border-red-500{% else %}border-slate-300 dark:border-slate-700{% endif %} bg-[#f6f7f8] dark:bg-slate-800 px-4 text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#137fec] focus:outline-none focus:ring-2 focus:ring-[#137fec]/20"
+            placeholder="Your Username" value="{{ username or '' }}" />
+          {% if errors and errors.username %}
+          <span class="text-xs sm:text-sm text-red-500">{{ errors.username }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Password Input with Toggle -->
+        <div class="flex flex-col gap-2">
+          <label for="password" class="text-sm sm:text-base font-medium text-slate-800 dark:text-white">Password</label>
+          <div class="relative">
+            <input type="password" id="password" name="password"
+              class="h-12 sm:h-14 w-full rounded-lg border {% if errors and errors.password %}border-red-500{% else %}border-slate-300 dark:border-slate-700{% endif %} bg-[#f6f7f8] dark:bg-slate-800 px-4 pr-12 text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#137fec] focus:outline-none focus:ring-2 focus:ring-[#137fec]/20"
+              placeholder="Enter password" />
+            <div class="absolute right-0 inset-y-0 flex items-center pr-4">
+              <span id="password-toggle"
+                class="material-symbols-outlined text-slate-400 dark:text-slate-500 cursor-pointer hover:text-slate-600 dark:hover:text-slate-300 transition-colors touch-manipulation">visibility</span>
+            </div>
+          </div>
+          {% if errors and errors.password %}
+          <span class="text-xs sm:text-sm text-red-500">{{ errors.password }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="flex flex-col gap-2">
+          <label for="confirm_password" class="text-sm sm:text-base font-medium text-slate-800 dark:text-white">Confirm
+            Password</label>
+          <input type="password" id="confirm_password" name="confirm_password"
+            class="h-12 sm:h-14 w-full rounded-lg border {% if errors and errors.confirm_password %}border-red-500{% else %}border-slate-300 dark:border-slate-700{% endif %} bg-[#f6f7f8] dark:bg-slate-800 px-4 text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#137fec] focus:outline-none focus:ring-2 focus:ring-[#137fec]/20"
+            placeholder="Re-enter password" />
+          {% if errors and errors.confirm_password %}
+          <span class="text-xs sm:text-sm text-red-500">{{ errors.confirm_password }}</span>
+          {% endif %}
+        </div>
+
+        <!-- General Error Message -->
+        {% if errors and errors.general %}
+        <div
+          class="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3 text-xs sm:text-sm text-red-700 dark:text-red-400">
+          {{ errors.general }}
+        </div>
+        {% endif %}
+
+        <!-- Submit Button -->
+        <button type="submit"
+          class="mt-2 sm:mt-4 flex h-12 sm:h-12 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-[#137fec] px-5 text-sm sm:text-base font-bold leading-normal tracking-wide text-white hover:bg-[#0f6fd4] transition-colors touch-manipulation">
+          <span class="truncate">Create Free Account</span>
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <p class="mt-6 text-center text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        Already have an account?
+        <a href="{{ url_for('login') }}" class="text-[#137fec] hover:underline font-medium"
+          onclick="event.preventDefault(); navigateWithAnimation(this.href, 'slide'); return false;">
+          Log in
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Branding Panel (50% width) -->
+  <div class="hidden lg:flex lg:w-1/2 flex-col justify-center bg-slate-900 relative overflow-hidden px-16 py-12">
+    <!-- Globe Background with Opacity and Gradient -->
+    <div class="absolute inset-0 bg-cover bg-center opacity-10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#101922] to-transparent"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-md">
+      <!-- VoyageAI Logo -->
+      <div class="flex items-center gap-3 mb-8">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-[#137fec]/20">
+          <span class="material-symbols-outlined text-3xl text-[#137fec]">travel_explore</span>
+        </div>
+        <p class="text-2xl font-bold text-white">VoyageAI</p>
+      </div>
+
+      <!-- Heading -->
+      <p class="text-4xl font-black text-white mb-12">Your personal travel architect.</p>
+
+      <!-- Value Propositions -->
+      <div class="flex flex-col gap-6">
+        <!-- Personalized Itineraries -->
+        <div class="flex items-start gap-4">
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#137fec]/20">
+            <span class="material-symbols-outlined text-xl text-[#137fec]">route</span>
+          </div>
+          <div>
+            <p class="text-base font-bold text-white mb-1">Personalized Itineraries</p>
+            <p class="text-sm text-slate-400">Crafted just for you, based on your preferences and travel style.</p>
+          </div>
+        </div>
+
+        <!-- 24/7 AI Assistance -->
+        <div class="flex items-start gap-4">
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#137fec]/20">
+            <span class="material-symbols-outlined text-xl text-[#137fec]">support_agent</span>
+          </div>
+          <div>
+            <p class="text-base font-bold text-white mb-1">24/7 AI Assistance</p>
+            <p class="text-sm text-slate-400">Get instant help and recommendations anytime, anywhere.</p>
+          </div>
+        </div>
+
+        <!-- Discover Hidden Gems -->
+        <div class="flex items-start gap-4">
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#137fec]/20">
+            <span class="material-symbols-outlined text-xl text-[#137fec]">diamond</span>
+          </div>
+          <div>
+            <p class="text-base font-bold text-white mb-1">Discover Hidden Gems</p>
+            <p class="text-sm text-slate-400">Uncover unique destinations and experiences off the beaten path.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

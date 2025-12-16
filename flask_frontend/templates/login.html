@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/validation.js') }}" defer></script>
+<style>
+  /* Override base container styles for full-width split screen */
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  main.container {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('login-form');
+    const validator = new FormValidator(form);
+
+    // Password visibility toggle
+    const passwordToggle = document.getElementById('password-toggle');
+    const passwordInput = document.getElementById('password');
+
+    if (passwordToggle && passwordInput) {
+      passwordToggle.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle icon
+        const icon = passwordToggle.querySelector('.material-symbols-outlined');
+        icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+      });
+    }
+
+    // Add real-time validation on blur
+    validator.addBlurValidation('email', (value) => validator.validateEmail(value));
+    validator.addBlurValidation('password', (value) => validator.validatePassword(value));
+
+    // Validate on form submission
+    form.addEventListener('submit', function (event) {
+      if (!validator.validateLoginForm()) {
+        event.preventDefault();
+        // Focus on first error field
+        const firstError = form.querySelector('.border-red-500');
+        if (firstError) {
+          firstError.focus();
+        }
+      }
+    });
+
+    // Focus on first error field if server-side validation failed
+    const firstServerError = form.querySelector('.border-red-500');
+    if (firstServerError) {
+      firstServerError.focus();
+    }
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Split-screen container -->
+<div class="flex min-h-screen flex-col lg:flex-row">
+
+  <!-- Left Branding Panel (50% width on desktop, hidden on mobile) -->
+  <div class="relative hidden lg:flex w-full items-center justify-center bg-[#1A202C] p-8 lg:w-1/2 lg:p-16">
+    <!-- World map background with opacity -->
+    <div class="absolute inset-0 bg-cover bg-center opacity-10"
+      ></div>
+
+    <!-- Content -->
+    <div class="relative z-10 flex max-w-lg flex-col items-center text-center">
+      <!-- VoyageAI Logo -->
+      <div class="mb-8 flex items-center gap-4">
+        <span class="material-symbols-outlined text-4xl text-primary">travel_explore</span>
+        <span class="text-3xl font-bold text-white">VoyageAI</span>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="mb-4 text-4xl font-bold text-white">Your journey, reimagined.</h1>
+
+      <!-- Descriptive text -->
+      <p class="text-lg text-gray-300">Intelligent travel planning starts here. Let our AI assistant guide you through
+        seamless trip planning, personalized recommendations, and unforgettable experiences.</p>
+    </div>
+  </div>
+
+  <!-- Right Form Panel (50% width on desktop, full width on mobile) -->
+  <div class="flex w-full items-center justify-center bg-background-light p-6 sm:p-8 dark:bg-background-dark lg:w-1/2 lg:p-16 min-h-screen">
+    <div class="w-full max-w-md">
+      <!-- Mobile Logo (visible only on mobile) -->
+      <div class="flex lg:hidden items-center justify-center gap-3 mb-8">
+        <span class="material-symbols-outlined text-3xl text-primary">travel_explore</span>
+        <span class="text-2xl font-bold text-slate-900 dark:text-white">VoyageAI</span>
+      </div>
+
+      <!-- Welcome Back heading -->
+      <h1 class="mb-2 text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Welcome Back</h1>
+      <h2 class="mb-6 sm:mb-8 text-sm sm:text-base text-slate-600 dark:text-slate-400">Log in to your account to continue.</h2>
+
+      <!-- Login Form -->
+      <form method="POST" action="{{ url_for('login') }}" id="login-form" class="flex flex-col gap-5 sm:gap-6">
+
+        <!-- Email Address Field -->
+        <div class="flex flex-col gap-2">
+          <label for="email" class="text-sm font-medium text-slate-900 dark:text-white">Email Address</label>
+          <input type="email" id="email" name="email"
+            class="form-input h-12 sm:h-12 w-full rounded-lg border border-slate-300 bg-background-light px-4 text-sm sm:text-base text-slate-900 placeholder-slate-400 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 {% if errors and errors.email %}border-red-500 dark:border-red-500{% endif %}"
+            placeholder="your@email.com" value="{{ email or '' }}" required />
+          {% if errors and errors.email %}
+          <span class="text-xs sm:text-sm text-red-500">{{ errors.email }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Password Field -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label for="password" class="text-sm font-medium text-slate-900 dark:text-white">Password</label>
+            <a href="#" class="text-xs sm:text-sm text-primary hover:underline">Forgot password?</a>
+          </div>
+          <div class="relative flex items-stretch">
+            <input type="password" id="password" name="password"
+              class="form-input h-12 sm:h-12 w-full rounded-lg border border-slate-300 bg-background-light px-4 pr-12 text-sm sm:text-base text-slate-900 placeholder-slate-400 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 {% if errors and errors.password %}border-red-500 dark:border-red-500{% endif %}"
+              placeholder="Enter your password" required />
+            <button type="button" id="password-toggle"
+              class="absolute right-0 top-0 flex h-12 sm:h-12 w-12 items-center justify-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 touch-manipulation">
+              <span class="material-symbols-outlined text-xl">visibility</span>
+            </button>
+          </div>
+          {% if errors and errors.password %}
+          <span class="text-xs sm:text-sm text-red-500">{{ errors.password }}</span>
+          {% endif %}
+        </div>
+
+        <!-- General Error Message -->
+        {% if errors and errors.general %}
+        <div
+          class="rounded-lg border border-red-200 bg-red-50 p-3 text-xs sm:text-sm text-red-600 dark:border-red-900 dark:bg-red-900/20 dark:text-red-400">
+          {{ errors.general }}
+        </div>
+        {% endif %}
+
+        <!-- Log In Button -->
+        <button type="submit"
+          class="flex h-12 sm:h-12 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-5 text-sm sm:text-base font-bold leading-normal tracking-wide text-white transition-colors hover:bg-opacity-90 touch-manipulation">
+          <span class="truncate">Log In</span>
+        </button>
+      </form>
+
+      <!-- Sign up link -->
+      <p class="mt-6 text-center text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        Don't have an account?
+        <a href="{{ url_for('signup') }}" class="text-primary hover:underline font-medium"
+          onclick="event.preventDefault(); navigateWithAnimation(this.href, 'slide'); return false;">
+          Sign up
+        </a>
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
